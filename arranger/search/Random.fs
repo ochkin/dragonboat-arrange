@@ -9,17 +9,22 @@ module Random =
         | ( size, [| |] ) -> { size=size; left=Array.create size None; right=Array.create size None }
         | _ ->
             let rand = System.Random()
-            let arrangment = Array.init ( Array.length paddlers ) (fun _ -> rand.Next( 2 ) )
-            let l = seq { for position, paddler in Array.zip arrangment paddlers do
-                                                if position = 0 then
-                                                    yield Some paddler } |> Seq.truncate size |> Seq.toArray
-            
-            let r = seq { for position, paddler in Array.zip arrangment paddlers do
-                                    if position = 1 then
-                                        yield Some paddler } |> Seq.truncate size |> Seq.toArray
-            { size=size;
-              left=Array.append l ( Array.create ( size - Array.length l ) None );
-              right=Array.append r ( Array.create (size - Array.length r ) None ) }
+            let shuffle a =
+                let mutable n = Array.length a
+                while 1 < n do
+                    let k = rand.Next n
+                    n <- n - 1
+                    let temp = Array.get a n
+                    Array.set a n <| Array.get a k
+                    Array.set a k temp
+
+            let tempArray = Array.copy paddlers
+            shuffle tempArray
+            let leftSize = min size ((1 + Array.length tempArray)/2)
+            let l = tempArray[..leftSize-1] |> List.ofArray
+            let r = tempArray[leftSize..leftSize+size-1] |> List.ofArray
+            Boat.Make size l r
+
 
     let searchRandom attempts size paddlers =
         let arrangements = Seq.init attempts (fun _ -> arrangeRandom size paddlers )

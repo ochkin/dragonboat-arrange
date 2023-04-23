@@ -30,6 +30,11 @@ module Common =
                     yield sprintf "║%*s║%-*s║" maxNameLen (formatPaddler l) maxNameLen (formatPaddler r)
                 yield sprintf "╚%s╩%s╝" horizonalLine horizonalLine
             } |> String.concat Environment.NewLine
+        static member Make size lefts rights =
+            let makeOneSide paddlers =
+                Seq.concat [ List.rev paddlers |> Seq.map Some; Seq.initInfinite (fun _ -> None)] |> Seq.take size |> Array.ofSeq
+            { size=size; left=makeOneSide lefts; right=makeOneSide rights }
+
 
     let cost boat =
         let getWeight = Array.sumBy <| function | Some p -> p.Weight | None -> 0.0

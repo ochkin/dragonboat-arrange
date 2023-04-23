@@ -18,22 +18,13 @@ module Backtrack =
                 Seq.concat [ seq { for i in List.rev indexes -> Some paddlers[i] }; Seq.initInfinite (fun _ -> None)] |> Seq.take size |> Array.ofSeq
             { size=size; left=getOneSide lefts; right=getOneSide rights }
 
-        // let mutable bestBoat = makeBoat ()
-        // let mutable bestCost = cost bestBoat
-
         let traverse = seq {
             let mutable haveMoreToTraverse = true
             while haveMoreToTraverse do
                 let boatIsFull = List.length lefts = size && List.length rights = size
                 let nothingLeft = (Array.length paddlers) - (List.length lefts) - (List.length rights)  = 0 // - (List.length outs)
                 if boatIsFull || nothingLeft then
-                    // let newBoat = makeBoat ()
-                    // let newCost = cost newBoat
-                    // if newCost < bestCost then
-                    //     bestCost <- newCost
-                    //     bestBoat <- newBoat
-                    // printfn "%O" newBoat
-                    yield makeBoat ()
+                    yield Boat.Make size [ for l in lefts -> paddlers[l] ] [ for r in rights -> paddlers[r] ]
 
                 // go up to the first paddler that can move
                 let mutable mover = None
