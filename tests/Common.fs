@@ -15,7 +15,6 @@ let ``side checks`` () =
 
 [<Fact>]
 let ``cost smoke test`` () =
-
     for size in [10; 8; 4; 1] do
         match Seq.map Some Util.paddlers |> Seq.chunkBySize size |> Seq.take 2 |> Seq.toList with
         | [ l; r] ->
