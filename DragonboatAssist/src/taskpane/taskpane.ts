@@ -42,17 +42,37 @@ export async function prepare() {
         expensesTable.name = TABLE_NAME;
         expensesTable.getHeaderRowRange().values = [[ "Name", "Weight", "Side" ]];
         expensesTable.rows.add(null, [
-          [ "Alice", 65.0, "Left"],
-          [ "Bob", 72.1, "Right"],
-          [ "Chad", 85.6, "Both"],
+          [ "Raymark", 65, "Left" ],
+          [ "Roly", 63, "Both" ],
+          [ "Iya", 54, "Right" ],
+          [ "John", 67.6, "Both" ],
+          [ "Leo", 59, "Both" ],
+
+          [ "Doc Pat", 60, "Right" ],
+          [ "LGrace", 63, "Left" ],
+          [ "Joshua", 85, "Right" ],
+          [ "Yormi", 66, "Left" ],
+          [ "Jesus", 70, "Both" ],
+
+          [ "Shin", 50, "Left" ],
+          [ "Nanz", 91.0, "Right" ],
+          [ "Sergey", 84.7, "Both" ],
+          [ "Brandon", 89.1, "Right" ],
+          [ "Eugene", 95, "Both" ],
+
+          [ "Prashant", 64, "Right" ],
+          [ "Kalesh", 70, "Right" ],
+          [ "Kristoffer", 74, "Both" ],
+          [ "Jenna", 60, "Right" ],
+          [ "Norelee", 53, "Left" ]
         ]);
-      
+
         if (Office.context.requirements.isSetSupported("ExcelApi", "1.2")) {
           sheet.getUsedRange().format.autofitColumns();
           sheet.getUsedRange().format.autofitRows();
         }
         sheet.activate();
-      
+
         // await context.sync();
       }
       else
@@ -95,8 +115,14 @@ export async function arrange()
 
         console.log(`Source: ${output.length}, ${output[0].length} `)
         console.log(`Target: ${target.rowCount}, ${target.columnCount} `)
-        
 
+        // clean up old data first
+        let extendedRange = target.getExtendedRange( Excel.KeyboardDirection.down ).load("address");
+        extendedRange.clear();
+        await context.sync();
+        console.log( `Cleared: ${extendedRange.address} `)
+
+        // now it is ok to write new data
         target.values = output;
         await context.sync()
       }
