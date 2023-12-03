@@ -3,7 +3,7 @@
  * See LICENSE in the project root for license information.
  */
 
-import { dummy } from "../backend";
+import { dummy, random } from "../backend";
 
 /* global console, document, Excel, Office */
 
@@ -102,29 +102,40 @@ export async function arrange()
       {
         let input = table.getDataBodyRange().load("values,rowCount,columnCount");
         await context.sync();
-
-        let output = dummy( input.values )
+        let output = random( input.values )
 
         const header = table.getHeaderRowRange().load("rowIndex,columnIndex,rowCount,columnCount");
         await context.sync();
         let target = sheet.getRangeByIndexes(
           header.rowIndex,                 header.columnIndex + header.columnCount + 2,
-          output.length, output[0].length
-          ).load( "rowCount,columnCount" );
+          output.length + 1, output[0].length
+          ).load( "rowIndex,columnIndex,rowCount,columnCount" );
         await context.sync();
-
-        console.log(`Source: ${output.length}, ${output[0].length} `)
-        console.log(`Target: ${target.rowCount}, ${target.columnCount} `)
 
         // clean up old data first
-        let extendedRange = target.getExtendedRange( Excel.KeyboardDirection.down ).load("address");
+        let extendedRange = target.getExtendedRange( Excel.KeyboardDirection.down ).load(
+          "address");
         extendedRange.clear();
         await context.sync();
-        console.log( `Cleared: ${extendedRange.address} `)
 
         // now it is ok to write new data
-        target.values = output;
-        await context.sync()
+        let lefts = sheet.getRangeByIndexes(
+          target.rowIndex + 1, target.columnIndex, target.rowCount, 1
+        ).load("address");
+        let rights = sheet.getRangeByIndexes(
+          target.rowIndex + 1, target.columnIndex + 1, target.rowCount, 1
+        ).load("address");
+        await context.sync();
+        let formattedBoat = [
+          [`=SUMPRODUCT(COUNTIF(${lefts.address},${TABLE_NAME}[Name]),${TABLE_NAME}[Weight]) / SUM(${TABLE_NAME}[Weight])`,
+           `=SUMPRODUCT(COUNTIF(${rights.address},${TABLE_NAME}[Name]),${TABLE_NAME}[Weight]) / SUM(${TABLE_NAME}[Weight])`],
+          ...output.slice(0)
+        ];
+        target.values = formattedBoat;
+
+        let summaryHeader = target.getAbsoluteResizedRange(1,2);
+        summaryHeader.numberFormat = [ ["0.0%"] ];
+        await context.sync();
       }
     });
   }

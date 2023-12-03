@@ -1,1 +1,1 @@
-dotnet fable --lang typescript
+dotnet fable --lang javascript
