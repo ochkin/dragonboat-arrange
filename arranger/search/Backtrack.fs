@@ -11,12 +11,6 @@ module Backtrack =
         let mutable lefts = List.rev [ 0..initialSizeLeft-1 ]
         let initialSizeRight = min size <| ( (Array.length paddlers) - initialSizeLeft )
         let mutable rights = List.rev [ initialSizeLeft..initialSizeLeft+initialSizeRight-1 ]
-        // let mutable outs = []
-
-        let makeBoat () =
-            let getOneSide indexes =
-                Seq.concat [ seq { for i in List.rev indexes -> Some paddlers[i] }; Seq.initInfinite (fun _ -> None)] |> Seq.take size |> Array.ofSeq
-            { size=size; left=getOneSide lefts; right=getOneSide rights }
 
         let traverse = seq {
             let mutable haveMoreToTraverse = true

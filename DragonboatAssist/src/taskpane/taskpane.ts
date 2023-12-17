@@ -3,7 +3,7 @@
  * See LICENSE in the project root for license information.
  */
 
-import { dummy, random } from "../backend";
+import { dummy, random, backtrack } from "../backend";
 
 /* global console, document, Excel, Office */
 
@@ -102,7 +102,7 @@ export async function arrange()
       {
         let input = table.getDataBodyRange().load("values,rowCount,columnCount");
         await context.sync();
-        let output = random( input.values )
+        let output = backtrack( input.values )
 
         const header = table.getHeaderRowRange().load("rowIndex,columnIndex,rowCount,columnCount");
         await context.sync();

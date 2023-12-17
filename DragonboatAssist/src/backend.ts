@@ -1,6 +1,7 @@
 import { cost, Boat, Paddler } from "../../arranger/Common.fs.js";
 import { Some, unwrap } from "../../arranger/fable_modules/fable-library.4.5.0/Option.js";
 import { arrangeRandom } from "../../arranger/search/Random.fs.js";
+import { searchBacktrack } from "../../arranger/search/Backtrack.fs.js";
 
 const SIDES = { "Left": 1, "Right": 2, "Both": 3 }
 
@@ -11,7 +12,6 @@ function toPaddlers( rawInput )
     {
         let side = SIDES[ row[2] ]
         let paddler = new Paddler(row[0], Number( row[1] ), side);
-        console.log( paddler );
         paddlers.push( paddler );
     }
     return paddlers;
@@ -64,6 +64,15 @@ export function random( input: any[][] )
     let paddlers = toPaddlers( input );
 
     let boat = arrangeRandom( 20, paddlers);
+    
+    return toTable( boat );
+}
+
+export function backtrack( input: any[][] )
+{
+    let paddlers = toPaddlers( input );
+
+    let boat = searchBacktrack( 20, paddlers);
     
     return toTable( boat );
 }
