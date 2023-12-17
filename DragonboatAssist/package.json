@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OfficeDev/Office-Addin-TaskPane.git"
+    "url": "https://github.com/ochkin/dragonboat-arrange.git"
   },
   "license": "MIT",
   "config": {
@@ -58,6 +58,6 @@
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [
-    "ie 11"
+    ">0.2%"
   ]
 }
